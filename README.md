@@ -8,8 +8,8 @@
 
 ### Step 3 : 啟動 SW / Activatge Service Workder 
 
-### Step  4: 選擇快取方案 / Choose Static cache strategy 
-* Cache with Network Fallback
+### Step  4: 選擇快取策略 / Choose Static cache strategy 
+* 先檢查快取, 如果快取是空的, 到網路下載檔案到快取 / Cache with Network Fallback
 
 ### Step 5 : 存取 SW / Fetch Service Worker 
 
