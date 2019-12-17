@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>WebCAM</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="icon" href="images/webcam.png">
+  <link rel="manifest" href="manifest.json">
+  <script src="vendor/vue.min.js"></script>
+  <script src="sw.js"></script>
+</head>
+
+<body>
+  <div id="app">    
+    <video id="video" width="400" height="300"></video>
+    <div id="capture" class="booth-capture-button" @click="capture">Take photo</div>
+    <canvas id="canvas" width="400" height="300"></canvas>
+    <img id="photo" src="http://placekitten.com/g/400/300" alt="Photo of you">  
+  </div>
+</body>
+
+</html>
+
+<script>
+  const app = new Vue({
+    el: "#app",
+    data: {
+      vueCanvas: null,
+    },
+    mounted() {
+      const video = document.querySelector('#video');
+      const canvas = document.querySelector('#canvas');
+      const photo = document.querySelector('#photo');
+      const ctx = canvas.getContext("2d")
+      // this.vueVideo = video
+      this.vueCanvas = ctx
+      // this.vuePhoto = photo
+
+      navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia
+
+      navigator.getMedia({
+        video: true,
+        audio: false
+      }, function (stream) {
+        video.srcObject = stream
+        video.play()
+      }, function (error) { })
+    },
+    methods: {
+      capture() {
+        this.vueCanvas.drawImage(video, 0, 0, 400, 300)
+        photo.setAttribute("src", canvas.toDataURL("image/png"))
+      }
+    }
+  })
+</script>
+
+
+<script>
+  // Progressive Enhancement
+  if (navigator.serviceWorker) {
+    // Register SW
+    navigator.serviceWorker
+      .register('sw.js')
+      .then(registration => {
+        console.log(registration);
+      })
+      .catch(console.error)
+  }
+</script>
+
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #app {
+    width: 400;
+    background-color: #ccc;
+    border: 10px solid #ddd;
+    /* margin: 0 auto; */
+  }
+
+  .booth-capture-button {
+    display: block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: cornflowerblue;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  #canvas {
+    display: none;
+
+  }
+</style>
